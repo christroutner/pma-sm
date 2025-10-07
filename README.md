@@ -72,7 +72,6 @@ There is additional developer documentation in the [dev-docs directory](./dev-do
 - [MongoDB](http://mongodb.org/)
 - [Mongoose](http://mongoosejs.com/)
 - [Passport](http://passportjs.org/)
-- [Nodemon](http://nodemon.io/)
 - [Mocha](https://mochajs.org/)
 - [apidoc](http://apidocjs.com/)
 - [ESLint](http://eslint.org/)

@@ -24,9 +24,9 @@ describe('#Controllers', () => {
     it('should attach the controllers', async () => {
       // mock IPFS
       sandbox.stub(uut.adapters, 'start').resolves({})
-      uut.adapters.ipfs.ipfsCoordAdapter = {
-        attachRPCRouter: () => {}
-      }
+      // uut.adapters.ipfs.ipfsCoordAdapter = {
+      //   attachRPCRouter: () => {}
+      // }
 
       // Mock the timer controllers
       sandbox.stub(uut.timerControllers, 'startTimers').returns()
