@@ -8,7 +8,7 @@
 
 // Local libraries
 import Adapters from '../adapters/index.js'
-import JSONRPC from './json-rpc/index.js'
+// import JSONRPC from './json-rpc/index.js'
 import UseCases from '../use-cases/index.js'
 import RESTControllers from './rest-api/index.js'
 import TimerControllers from './timer-controllers.js'
@@ -27,7 +27,7 @@ class Controllers {
     this.initUseCases = this.initUseCases.bind(this)
     this.attachRESTControllers = this.attachRESTControllers.bind(this)
     this.attachControllers = this.attachControllers.bind(this)
-    this.attachRPCControllers = this.attachRPCControllers.bind(this)
+    // this.attachRPCControllers = this.attachRPCControllers.bind(this)
   }
 
   // Spin up any adapter libraries that have async startup needs.
@@ -57,27 +57,27 @@ class Controllers {
     // Wait for any startup processes to complete for the Adapters libraries.
     // await this.adapters.start()
 
-    if (this.config.useIpfs) {
-      // Attach JSON RPC controllers
-      this.attachRPCControllers()
-    }
+    // if (this.config.useIpfs) {
+    //   // Attach JSON RPC controllers
+    //   this.attachRPCControllers()
+    // }
 
     // Attach and start the timer controllers
     this.timerControllers.startTimers()
   }
 
   // Add the JSON RPC router to the ipfs-coord adapter.
-  attachRPCControllers () {
-    const jsonRpcController = new JSONRPC({
-      adapters: this.adapters,
-      useCases: this.useCases
-    })
+  // attachRPCControllers () {
+  //   const jsonRpcController = new JSONRPC({
+  //     adapters: this.adapters,
+  //     useCases: this.useCases
+  //   })
 
-    // Attach the input of the JSON RPC router to the output of ipfs-coord.
-    this.adapters.ipfs.ipfsCoordAdapter.attachRPCRouter(
-      jsonRpcController.router
-    )
-  }
+  //   // Attach the input of the JSON RPC router to the output of ipfs-coord.
+  //   this.adapters.ipfs.ipfsCoordAdapter.attachRPCRouter(
+  //     jsonRpcController.router
+  //   )
+  // }
 }
 
 export default Controllers

@@ -31,7 +31,7 @@ describe('#adapters', () => {
       uut.config.env = 'not-a-test'
       sandbox.stub(uut.fullStackJwt, 'getJWT').resolves()
       sandbox.stub(uut.fullStackJwt, 'instanceBchjs').resolves()
-      sandbox.stub(uut.ipfs, 'start').resolves()
+      // sandbox.stub(uut.ipfs, 'start').resolves()
 
       const result = await uut.start()
 
@@ -45,11 +45,11 @@ describe('#adapters', () => {
 
       sandbox.stub(uut.fullStackJwt, 'getJWT').resolves()
       sandbox.stub(uut.fullStackJwt, 'instanceBchjs').resolves()
-      const ipfsSpy = sandbox.stub(uut.ipfs, 'start').resolves(null)
+      // const ipfsSpy = sandbox.stub(uut.ipfs, 'start').resolves(null)
 
       const result = await uut.start()
 
-      assert.isTrue(ipfsSpy.notCalled)
+      // assert.isTrue(ipfsSpy.notCalled)
       assert.equal(result, true)
     })
 
@@ -58,7 +58,8 @@ describe('#adapters', () => {
         // Force an error
         uut.config.getJwtAtStartup = false
         uut.config.env = 'dev'
-        sandbox.stub(uut.ipfs, 'start').rejects(new Error('test error'))
+        // sandbox.stub(uut.ipfs, 'start').rejects(new Error('test error'))
+        sandbox.stub(uut.wallet, 'instanceWalletWithoutInitialization').rejects(new Error('test error'))
 
         await uut.start()
 
