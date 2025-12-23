@@ -144,7 +144,10 @@ if (!config.noMongo) {
             user: {
               email: 'test3@test.com',
               password: 'supersecretpassword',
-              name: 'test3'
+              name: 'test3',
+              profilePictureUrl: 'https://example.com/profile.jpg',
+              about: 'I am a test user',
+              website: 'https://example.com'
             }
           }
         }
@@ -165,6 +168,9 @@ if (!config.noMongo) {
         )
         assert.property(result.data, 'token', 'Token property exists.')
         assert.equal(result.data.user.type, 'user')
+        assert.equal(result.data.user.profilePictureUrl, 'https://example.com/profile.jpg')
+        assert.equal(result.data.user.about, 'I am a test user')
+        assert.equal(result.data.user.website, 'https://example.com')
       })
     })
 
@@ -634,7 +640,10 @@ if (!config.noMongo) {
             user: {
               email: 'testToUpdate@test.com',
               name: 'my name',
-              username: 'myUsername'
+              username: 'myUsername',
+              profilePictureUrl: 'https://example.com/profile2.jpg',
+              about: 'I am a test user2',
+              website: 'https://example2.com'
             }
           }
         }
@@ -646,7 +655,9 @@ if (!config.noMongo) {
         assert.property(user, 'type')
         assert.property(user, 'email')
         assert.property(user, 'name')
-
+        assert.property(user, 'profilePictureUrl')
+        assert.property(user, 'about')
+        assert.property(user, 'website')
         assert.property(user, '_id')
         assert.equal(user._id, _id)
         assert.notProperty(
@@ -657,6 +668,9 @@ if (!config.noMongo) {
         assert.equal(user.name, 'my name')
         assert.equal(user.email, 'testToUpdate@test.com')
         assert.equal(user.username, 'myUsername')
+        assert.equal(user.profilePictureUrl, 'https://example.com/profile2.jpg')
+        assert.equal(user.about, 'I am a test user2')
+        assert.equal(user.website, 'https://example2.com')
       })
     })
 

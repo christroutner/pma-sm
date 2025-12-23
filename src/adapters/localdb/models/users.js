@@ -15,7 +15,10 @@ const User = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
-  }
+  },
+  profilePictureUrl: { type: String },
+  about: { type: String },
+  website: { type: String }
 })
 
 // Before saving, convert the password to a hash.

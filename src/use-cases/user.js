@@ -111,6 +111,15 @@ class UserLib {
       if (newData.password && typeof newData.password !== 'string') {
         throw new Error("Property 'password' must be a string!")
       }
+      if (newData.profilePictureUrl && typeof newData.profilePictureUrl !== 'string') {
+        throw new Error("Property 'profilePictureUrl' must be a string!")
+      }
+      if (newData.about && typeof newData.about !== 'string') {
+        throw new Error("Property 'about' must be a string!")
+      }
+      if (newData.website && typeof newData.website !== 'string') {
+        throw new Error("Property 'website' must be a string!")
+      }
 
       // Save a copy of the original user type.
       const userType = existingUser.type
