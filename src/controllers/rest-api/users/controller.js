@@ -36,12 +36,15 @@ class UserRESTControllerLib {
    * @apiGroup REST Users
    *
    * @apiExample Example usage:
-   * curl -H "Content-Type: application/json" -X POST -d '{ "user": { "email": "email@format.com", "name": "my name", "password": "secretpasas" } }' localhost:5010/users
+   * curl -H "Content-Type: application/json" -X POST -d '{ "user": { "email": "email@format.com", "name": "my name", "password": "secretpasas", "profilePictureUrl": "https://example.com/profile.jpg", "about": "I am a test user", "website": "https://example.com" } }' localhost:5010/users
    *
    * @apiParam {Object} user          User object (required)
    * @apiParam {String} user.email Email
    * @apiParam {String} user.password Password
    * @apiParam {String} user.name name or handle
+   * @apiParam {String} user.profilePictureUrl Profile picture URL
+   * @apiParam {String} user.about About text
+   * @apiParam {String} user.website Website URL
    *
    * @apiSuccess {Object}   users           User object
    * @apiSuccess {ObjectId} users._id       User id
@@ -49,6 +52,9 @@ class UserRESTControllerLib {
    * @apiSuccess {String}   users.name      User name
    * @apiSuccess {String}   users.username  User username
    * @apiSuccess {String}   users.email     User email
+   * @apiSuccess {String}   users.profilePictureUrl Profile picture URL
+   * @apiSuccess {String}   users.about About text
+   * @apiSuccess {String}   users.website Website URL
    *
    * @apiSuccessExample {json} Success-Response:
    *     HTTP/1.1 200 OK
@@ -58,6 +64,9 @@ class UserRESTControllerLib {
    *          "name": "John Doe"
    *          "email": "email@format.com",
    *          "password": "somestrongpassword"
+   *          "profilePictureUrl": "https://example.com/profile.jpg"
+   *          "about": "I am a test user"
+   *          "website": "https://example.com"
    *       }
    *     }
    *
