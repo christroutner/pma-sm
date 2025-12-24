@@ -7,7 +7,7 @@
 // Local libraries
 import UserUseCases from './user.js'
 import { UsageUseCases } from './usage-use-cases.js'
-
+import PostUseCases from './post.js'
 class UseCases {
   constructor (localConfig = {}) {
     this.adapters = localConfig.adapters
@@ -20,6 +20,7 @@ class UseCases {
     // console.log('use-cases/index.js localConfig: ', localConfig)
     this.user = new UserUseCases(localConfig)
     this.usage = new UsageUseCases(localConfig)
+    this.post = new PostUseCases(localConfig)
   }
 
   // Run any startup Use Cases at the start of the app.

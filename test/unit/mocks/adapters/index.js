@@ -70,6 +70,29 @@ const localdb = {
     }
   },
 
+  Posts: class Posts {
+    static findById () {}
+    static find () { return [] }
+    static findOne () {
+      return {}
+    }
+
+    async save () {
+      return {}
+    }
+
+
+    toJSON () {
+      return {}
+    }
+
+    async remove () {
+      return true
+    }
+
+  },
+
+
   Usage: class Usage {
     static findById () {}
     static find () {}
@@ -102,6 +125,7 @@ const localdb = {
       return true
     }
   },
+  
 
   validatePassword: () => {
     return true

@@ -31,6 +31,7 @@ class UserUseCaseMock {
   }
 }
 
+
 class UsageUseCaseMock {
   async cleanUsage() {
     return {}
@@ -56,7 +57,24 @@ class UsageUseCaseMock {
     return true
   }
 }
+class PostUseCaseMock {
+  async createPost(postObj) {
+    return {}
+  }
 
+  async getAllPosts() {
+    return true
+  }
+  async getPost(params) {
+    return true
+  }
+  async updatePost(existingPost, newData) {
+    return true
+  }
+  async deletePost(post) {
+    return true
+  }
+}
 class UseCasesMock {
   constuctor(localConfig = {}) {
     // this.user = new UserUseCaseMock(localConfig)
@@ -64,6 +82,7 @@ class UseCasesMock {
 
   user = new UserUseCaseMock()
   usage = new UsageUseCaseMock()
+  post = new PostUseCaseMock()
 }
 
 export default UseCasesMock;
