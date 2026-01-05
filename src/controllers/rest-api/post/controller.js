@@ -39,20 +39,18 @@ class PostRESTControllerLib {
    * @apiGroup REST Post
    *
    * @apiExample Example usage:
-   * curl -H "Content-Type: application/json" -X POST -d '{ "post": { "ownerId": "56bd1da600a526986cf65c80", "postContent": "This is a test post", "likes": ["56bd1da600a526986cf65c80"] } }' localhost:5010/post
+   * curl -H "Content-Type: application/json" -X POST -d '{ "post": { "ownerId": "56bd1da600a526986cf65c80", "postContent": "This is a test post" } }' localhost:5010/post
    *
    * @apiParam {Object} post          Post object (required)
    * @apiParam {String} post.ownerId Owner id
    * @apiParam {Date} post.createdAt Created at
    * @apiParam {String} post.postContent Post content
-   * @apiParam {Array} post.likes Likes
    *
    * @apiSuccess {Object}   posts           Post object
    * @apiSuccess {ObjectId} posts._id       Post id
    * @apiSuccess {String}   post.ownerId    Owner id
    * @apiSuccess {Date}     post.createdAt  Created at
    * @apiSuccess {String}   post.postContent Post content
-   * @apiSuccess {Array}    post.likes      Likes
    *
    * @apiSuccessExample {json} Success-Response:
    *     HTTP/1.1 200 OK
@@ -62,7 +60,7 @@ class PostRESTControllerLib {
    *          "ownerId": "56bd1da600a526986cf65c80"
    *          "createdAt": "2025-01-01"
    *          "postContent": "This is a test post"
-   *          "likes": ["56bd1da600a526986cf65c80"]
+   *          "likes": []
    *       }
    *     }
    *

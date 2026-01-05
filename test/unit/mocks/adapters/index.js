@@ -91,6 +91,27 @@ const localdb = {
     }
 
   },
+    Comments: class Comments {
+    static findById () {}
+    static find () { return [] }
+    static findOne () {
+      return {}
+    }
+
+    async save () {
+      return {}
+    }
+
+
+    toJSON () {
+      return {}
+    }
+
+    async remove () {
+      return true
+    }
+
+  },
 
 
   Usage: class Usage {

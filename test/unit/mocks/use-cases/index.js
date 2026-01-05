@@ -75,6 +75,25 @@ class PostUseCaseMock {
     return true
   }
 }
+
+class CommentUseCaseMock {
+  async createComment(commentObj) {
+    return {}
+  }
+
+  async getAllComments(params) {
+    return true
+  }
+  async getComment(params) {
+    return true
+  }
+  async updateComment(existingComment, newData) {
+    return true
+  }
+  async deleteComment(comment) {
+    return true
+  }
+}
 class UseCasesMock {
   constuctor(localConfig = {}) {
     // this.user = new UserUseCaseMock(localConfig)
@@ -83,6 +102,7 @@ class UseCasesMock {
   user = new UserUseCaseMock()
   usage = new UsageUseCaseMock()
   post = new PostUseCaseMock()
+  comment = new CommentUseCaseMock()
 }
 
 export default UseCasesMock;

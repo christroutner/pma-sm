@@ -56,22 +56,15 @@ describe('#Post-Entity', () => {
         assert.include(err.message, "Property 'postContent' must be a string!")
       }
     })
-    it('should throw an error if provided likes is not an array', () => {
-      try {
-        uut.validate({ ownerId: '123', postContent: 'test', likes: '123' })
-        assert.fail('Unexpected code path')
-      } catch (err) {
-        assert.include(err.message, "Property 'likes' must be an array!")
-      }
-    })
     it('should return a Post object', () => {
       const inputData = {
         ownerId: '123',
-        postContent: 'test',
-        likes: ['123']
+        postContent: 'test'
       }
       const entry = uut.validate(inputData)
       assert.equal(entry.ownerId, inputData.ownerId)
+      assert.equal(entry.postContent, inputData.postContent)
+      assert.equal(entry.likes.length, 0)
     })
   })
 })

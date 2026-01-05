@@ -8,6 +8,7 @@
 import UserUseCases from './user.js'
 import { UsageUseCases } from './usage-use-cases.js'
 import PostUseCases from './post.js'
+import CommentUseCases from './comment.js'
 class UseCases {
   constructor (localConfig = {}) {
     this.adapters = localConfig.adapters
@@ -21,6 +22,7 @@ class UseCases {
     this.user = new UserUseCases(localConfig)
     this.usage = new UsageUseCases(localConfig)
     this.post = new PostUseCases(localConfig)
+    this.comment = new CommentUseCases(localConfig)
   }
 
   // Run any startup Use Cases at the start of the app.
