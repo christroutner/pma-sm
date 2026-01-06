@@ -1,5 +1,5 @@
 /**
- * End-to-end tests for /post endpoints.
+ * End-to-end tests for /comment endpoints.
  *
  */
 import testUtils from '../../utils/test-utils.js'
@@ -13,29 +13,33 @@ util.inspect.defaultOptions = { depth: 1 }
 
 const LOCALHOST = `http://localhost:${config.port}`
 
-const context = {}
+const context = {
+  postId: 'mock-post-id',
+  commentId: 'mock-comment-id'
+}
 let sandbox
 
 // const mockContext = require('../../unit/mocks/ctx-mock').context
 
 if (!config.noMongo) {
-  describe('Posts', () => {
+  describe('Comments', () => {
     before(async () => {
       // console.log(`config: ${JSON.stringify(config, null, 2)}`)
 
       // Create a second test user.
       const userObj = {
-        email: 'test2@test.com',
+        email: 'test-comment@test.com',
         password: 'pass2',
         name: 'test2'
       }
       const userObj2 = {
-        email: 'test3@test.com',
+        email: 'test-comment2@test.com',
         password: 'pass3',
         name: 'test3'
       }
       const testUser = await testUtils.createUser(userObj)
       const testUser2 = await testUtils.createUser(userObj2)
+
       // console.log(`testUser2: ${JSON.stringify(testUser, null, 2)}`)
       context.user = testUser.user
       context.token = testUser.token
@@ -62,16 +66,16 @@ if (!config.noMongo) {
 
     afterEach(() => sandbox.restore())
 
-    describe('POST /post - Create post', () => {
+    describe('POST /comment - Create comment', () => {
       it('should not create  if the authorization header is missing', async () => {
         try {
           const options = {
             method: 'POST',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             data: {
-              post: {
+              comment: {
                 ownerId: context.user._id,
-                postContent: 'This is a test post'
+                commentContent: 'This is a test comment'
               }
             }
           }
@@ -83,16 +87,16 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not create a post if the authorization header is missing the scheme', async () => {
+      it('should not create a comment if the authorization header is missing the scheme', async () => {
         try {
           const options = {
             method: 'POST',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             data: {
-              post: {
+              comment: {
                 ownerId: context.user._id,
                 createdAt: new Date(),
-                postContent: 'This is a test post'
+                commentContent: 'This is a test comment'
               }
             }
           }
@@ -104,16 +108,16 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not create a post if the authorization header has invalid scheme', async () => {
+      it('should not create a comment if the authorization header has invalid scheme', async () => {
         try {
           const options = {
             method: 'POST',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             data: {
-              post: {
+              comment: {
                 ownerId: context.user._id,
                 createdAt: new Date(),
-                postContent: 'This is a test post'
+                commentContent: 'This is a test comment'
               }
             }
           }
@@ -125,16 +129,16 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not create a post if the token is invalid', async () => {
+      it('should not create a comment if the token is invalid', async () => {
         try {
           const options = {
             method: 'POST',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             data: {
-              post: {
+              comment: {
                 ownerId: context.user._id,
                 createdAt: new Date(),
-                postContent: 'This is a test post'
+                commentContent: 'This is a test comment'
               }
             }
           }
@@ -145,39 +149,40 @@ if (!config.noMongo) {
           assert.equal(err.response.status, 401)
         }
       })
-      it('should create a post', async () => {
+      it('should create a comment', async () => {
         const options = {
           method: 'POST',
-          url: `${LOCALHOST}/post`,
+          url: `${LOCALHOST}/comment`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${context.token}`
           },
           data: {
-            post: {
+            comment: {
               ownerId: context.user._id,
-              createdAt: new Date(),
-              postContent: 'This is a test post'
+              commentContent: 'This is a test comment',
+              parentId: context.postId,
+              parentType: 'post'
             }
           }
         }
         const result = await axios(options)
         assert.equal(result.status, 200)
-        assert.equal(result.data.post.ownerId, context.user._id)
-        assert.equal(result.data.post.postContent, 'This is a test post')
-        assert.equal(result.data.post.likes.length, 0)
-        assert.property(result.data.post, 'createdAt')
+        assert.equal(result.data.comment.ownerId, context.user._id)
+        assert.equal(result.data.comment.commentContent, 'This is a test comment')
+        assert.equal(result.data.comment.likes.length, 0)
+        assert.property(result.data.comment, 'createdAt')
 
-        context.postId = result.data.post._id
+        context.commentId = result.data.comment._id
       })
     })
 
-    describe('GET /post', () => {
-      it('should not get a post if the authorization header is missing', async () => {
+    describe('GET /comment', () => {
+      it('should not get a comment if the authorization header is missing', async () => {
         try {
           const options = {
-            method: 'POST',
-            url: `${LOCALHOST}/post`,
+            method: 'GET',
+            url: `${LOCALHOST}/comment`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -192,12 +197,12 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not get a post if the authorization header has invalid scheme', async () => {
+      it('should not get a comment if the authorization header has invalid scheme', async () => {
         const { token } = context
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             headers: {
               Accept: 'application/json',
               Authorization: `Unknown ${token}`
@@ -211,11 +216,11 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not get a post if token is invalid', async () => {
+      it('should not get a comment if token is invalid', async () => {
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post`,
+            url: `${LOCALHOST}/comment`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -229,31 +234,31 @@ if (!config.noMongo) {
         }
       })
 
-      it('should get all posts', async () => {
+      it('should get all comments', async () => {
         const { token } = context
 
         const options = {
           method: 'GET',
-          url: `${LOCALHOST}/post`,
+          url: `${LOCALHOST}/comment`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
           }
         }
         const result = await axios(options)
-        const post = result.data.posts[0]
+        const comment = result.data.comments[0]
         // console.log(`users: ${util.inspect(users)}`)
 
-        assert.hasAnyKeys(post, ['ownerId', 'createdAt', 'postContent', 'likes'])
+        assert.hasAnyKeys(comment, ['ownerId', 'createdAt', 'commentContent', 'likes'])
       })
     })
 
-    describe('GET /post/:id', () => {
+    describe('GET /comment/:id', () => {
       it('should not get a post if the authorization header is missing', async () => {
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -267,12 +272,12 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not get a post if the authorization header has invalid scheme', async () => {
+      it('should not get a comment if the authorization header has invalid scheme', async () => {
         const { token } = context
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: `Unknown ${token}`
@@ -286,11 +291,11 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not get a post if token is invalid', async () => {
+      it('should not get a comment if token is invalid', async () => {
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -304,13 +309,13 @@ if (!config.noMongo) {
         }
       })
 
-      it("should throw 404 if post doesn't exist", async () => {
+      it("should throw 404 if comment doesn't exist", async () => {
         const { token } = context
 
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post/5fa4bd7ee1828f5f4d8ed004`,
+            url: `${LOCALHOST}/comment/5fa4bd7ee1828f5f4d8ed004`,
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`
@@ -324,13 +329,13 @@ if (!config.noMongo) {
         }
       })
 
-      it('should throw 422 for invalid post id', async () => {
+      it('should throw 422 for invalid comment id', async () => {
         const { token } = context
 
         try {
           const options = {
             method: 'GET',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`
@@ -344,13 +349,13 @@ if (!config.noMongo) {
         }
       })
 
-      it('should get a post', async () => {
-        const _id = context.postId
+      it('should get a comment', async () => {
+        const _id = context.commentId
         const token = context.token
 
         const options = {
           method: 'GET',
-          url: `${LOCALHOST}/post/${_id}`,
+          url: `${LOCALHOST}/comment/${_id}`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`
@@ -358,22 +363,24 @@ if (!config.noMongo) {
         }
         const result = await axios(options)
 
-        const post = result.data.post
+        const comment = result.data.comment
         // console.log(`user: ${util.inspect(user)}`)
 
-        assert.property(post, 'ownerId')
-        assert.property(post, 'createdAt')
-        assert.property(post, 'postContent')
-        assert.property(post, 'likes')
+        assert.property(comment, 'ownerId')
+        assert.property(comment, 'createdAt')
+        assert.property(comment, 'commentContent')
+        assert.property(comment, 'parentId')
+        assert.property(comment, 'parentType')
+        assert.property(comment, 'likes')
       })
     })
 
-    describe('PUT /post/:id', () => {
-      it('should not update a post if the authorization header is missing', async () => {
+    describe('PUT /comment/:id', () => {
+      it('should not update a comment if the authorization header is missing', async () => {
         try {
           const options = {
             method: 'PUT',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -387,12 +394,12 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not get a post if the authorization header has invalid scheme', async () => {
+      it('should not get a comment if the authorization header has invalid scheme', async () => {
         const { token } = context
         try {
           const options = {
             method: 'PUT',
-            url: `${LOCALHOST}/post/5fa4bd7ee1828f5f4d8ed004`,
+            url: `${LOCALHOST}/comment/5fa4bd7ee1828f5f4d8ed004`,
             headers: {
               Accept: 'application/json',
               Authorization: `Unknown ${token}`
@@ -406,11 +413,11 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not update a post if token is invalid', async () => {
+      it('should not update a comment if token is invalid', async () => {
         try {
           const options = {
             method: 'PUT',
-            url: `${LOCALHOST}/post/5fa4bd7ee1828f5f4d8ed004`,
+            url: `${LOCALHOST}/comment/5fa4bd7ee1828f5f4d8ed004`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -424,13 +431,13 @@ if (!config.noMongo) {
         }
       })
 
-      it("should not update a post if post doesn't exist", async () => {
+      it("should not update a comment if comment doesn't exist", async () => {
         const { token } = context
 
         try {
           const options = {
             method: 'PUT',
-            url: `${LOCALHOST}/post/5fa4bd7ee1828f5f4d8ed004`,
+            url: `${LOCALHOST}/comment/5fa4bd7ee1828f5f4d8ed004`,
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`
@@ -444,13 +451,13 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not update a post if post id is invalid', async () => {
+      it('should not update a comment if comment id is invalid', async () => {
         const { token } = context
 
         try {
           const options = {
             method: 'PUT',
-            url: `${LOCALHOST}/post/1`,
+            url: `${LOCALHOST}/comment/1`,
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${token}`
@@ -464,37 +471,37 @@ if (!config.noMongo) {
         }
       })
 
-      it('should update a post when owner', async () => {
+      it('should update a comment when owner', async () => {
         const options = {
           method: 'PUT',
-          url: `${LOCALHOST}/post/${context.postId}`,
+          url: `${LOCALHOST}/comment/${context.commentId}`,
           headers: {
             Authorization: `Bearer ${context.token}`
           },
           data: {
-            post: {
-              postContent: 'This is a test post updated',
+            comment: {
+              commentContent: 'This is a test comment updated',
               likes: [`${context.user._id}`]
             }
           }
         }
         const result = await axios(options)
         assert.equal(result.status, 200)
-        assert.equal(result.data.post.postContent, 'This is a test post updated')
-        assert.equal(result.data.post.likes.length, 1)
-        assert.property(result.data.post, 'updatedAt')
+        assert.equal(result.data.comment.commentContent, 'This is a test comment updated')
+        assert.equal(result.data.comment.likes.length, 1)
+        assert.property(result.data.comment, 'updatedAt')
       })
 
-      it('should update a post when admin', async () => {
+      it('should update a comment when admin', async () => {
         const options = {
           method: 'PUT',
-          url: `${LOCALHOST}/post/${context.postId}`,
+          url: `${LOCALHOST}/comment/${context.commentId}`,
           headers: {
             Authorization: `Bearer ${context.adminJWT}`
           },
           data: {
-            post: {
-              postContent: 'This is a test post updated by admin',
+            comment: {
+              commentContent: 'This is a test comment updated by admin',
               likes: []
             }
           }
@@ -503,17 +510,19 @@ if (!config.noMongo) {
         const result = await axios(options)
         // console.log(`result stringified: ${JSON.stringify(result, null, 2)}`)
 
-        const post = result.data.post
-        assert.equal(post.postContent, 'This is a test post updated by admin')
+        assert.equal(result.status, 200)
+        assert.equal(result.data.comment.commentContent, 'This is a test comment updated by admin')
+        assert.equal(result.data.comment.likes.length, 0)
+        assert.property(result.data.comment, 'updatedAt')
       })
     })
 
-    describe('DELETE /post/:id', () => {
-      it('should not delete a post if the authorization header is missing', async () => {
+    describe('DELETE /comment/:id', () => {
+      it('should not delete a comment if the authorization header is missing', async () => {
         try {
           const options = {
             method: 'DELETE',
-            url: `${LOCALHOST}/post/${context.postId}`,
+            url: `${LOCALHOST}/comment/${context.commentId}`,
             headers: {
               Accept: 'application/json',
               Authorization: 'Bearer 1'
@@ -527,13 +536,13 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not delete a post if the authorization header has invalid scheme', async () => {
+      it('should not delete a comment if the authorization header has invalid scheme', async () => {
         const { token } = context
 
         try {
           const options = {
             method: 'DELETE',
-            url: `${LOCALHOST}/post/${context.postId}`,
+            url: `${LOCALHOST}/comment/${context.commentId}`,
             headers: {
               Accept: 'application/json',
               Authorization: `Unknown ${token}`
@@ -547,11 +556,11 @@ if (!config.noMongo) {
         }
       })
 
-      it('should not delete a post if token is invalid', async () => {
+      it('should not delete a comment if token is invalid', async () => {
         try {
           const options = {
             method: 'DELETE',
-            url: `${LOCALHOST}/post/${context.postId}`,
+            url: `${LOCALHOST}/comment/${context.commentId}`,
             headers: {
               Authorization: 'Bearer 1'
             }
@@ -562,19 +571,19 @@ if (!config.noMongo) {
         }
       })
 
-      it('should delete a post', async () => {
+      it('should delete a comment', async () => {
         const options = {
           method: 'DELETE',
-          url: `${LOCALHOST}/post/${context.postId}`,
+          url: `${LOCALHOST}/comment/${context.commentId}`,
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${context.token}`
           }
         }
         const result = await axios(options)
-        // console.log(`result: ${util.inspect(result.data.success)}`)
+        // console.log(`result: ${util.inspect(result.data.comment)}`)
 
-        assert.equal(result.data.success, true)
+        assert.equal(result.status, 200)
       })
     })
   })

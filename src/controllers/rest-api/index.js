@@ -15,6 +15,7 @@ import IpfsRESTController from './ipfs/index.js'
 import config from '../../../config/index.js'
 import UsageRESTController from './usage/index.js'
 import PostRouter from './post/index.js'
+import CommentRouter from './comment/index.js'
 
 class RESTControllers {
   constructor (localConfig = {}) {
@@ -74,6 +75,10 @@ class RESTControllers {
     // Attach the REST API Controllers associated with the /post route
     const postRouter = new PostRouter(dependencies)
     postRouter.attach(app)
+
+    // Attach the REST API Controllers associated with the /comment route
+    const commentRouter = new CommentRouter(dependencies)
+    commentRouter.attach(app)
   }
 }
 

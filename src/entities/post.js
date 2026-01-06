@@ -3,7 +3,7 @@
 */
 
 class Post {
-  validate ({ ownerId, createdAt, postContent, likes } = {}) {
+  validate ({ ownerId, createdAt, postContent } = {}) {
     // Input Validation
     if (!ownerId || typeof ownerId !== 'string') {
       throw new Error("Property 'ownerId' must be a string!")
@@ -12,11 +12,8 @@ class Post {
     if (!postContent || typeof postContent !== 'string') {
       throw new Error("Property 'postContent' must be a string!")
     }
-    if (likes && !Array.isArray(likes)) {
-      throw new Error("Property 'likes' must be an array!")
-    }
 
-    const postData = { ownerId, createdAt, postContent, likes }
+    const postData = { ownerId, createdAt, postContent, likes: [] }
 
     return postData
   }
