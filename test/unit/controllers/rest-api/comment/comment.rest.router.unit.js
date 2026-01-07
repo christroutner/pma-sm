@@ -128,4 +128,13 @@ describe('#Comment-REST-Router', () => {
       assert.isTrue(spy.calledOnce)
     })
   })
+  describe('#getCommentsByParentId', () => {
+    it('should route to controller', async () => {
+      sandbox.stub(uut.validators, 'ensureUser').resolves(true)
+      const spy = sandbox.stub(uut.commentRESTController, 'getCommentsByParentId').resolves(true)
+
+      await uut.getCommentsByParentId()
+      assert.isTrue(spy.calledOnce)
+    })
+  })
 })

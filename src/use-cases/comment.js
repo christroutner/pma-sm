@@ -26,6 +26,7 @@ class CommentLib {
     this.getComment = this.getComment.bind(this)
     this.updateComment = this.updateComment.bind(this)
     this.deleteComment = this.deleteComment.bind(this)
+    this.getCommentsByParentId = this.getCommentsByParentId.bind(this)
   }
 
   // Create a new post model and add it to the Mongo database.
@@ -41,7 +42,7 @@ class CommentLib {
 
       return comment.toJSON()
     } catch (err) {
-      wlogger.error('Error in lib/comments.js/createComment()')
+      wlogger.error('Error in lib/comments.js/createComment()', err)
       throw err
     }
   }
@@ -100,8 +101,7 @@ class CommentLib {
       if (newData.likes && !Array.isArray(newData.likes)) {
         throw new Error("Property 'likes' must be an array!")
       }
-      existingComment.commentContent = newData.commentContent
-      existingComment.likes = newData.likes
+      Object.assign(existingComment, newData)
       existingComment.updatedAt = new Date()
 
       // Save the changes to the database.
@@ -119,6 +119,23 @@ class CommentLib {
       await comment.remove()
     } catch (err) {
       wlogger.error('Error in lib/comments.js/deleteComment()')
+      throw err
+    }
+  }
+
+  // get comments by parent id ( post or comment )
+  async getCommentsByParentId (parentId) {
+    try {
+      if (!parentId || typeof parentId !== 'string') {
+        throw new Error("Property 'parentId' must be a string!")
+      }
+      const comments = await this.CommentModel.find({ parentId }).populate('ownerId')
+
+      // sort by created at , newest to oldest
+      comments.sort((a, b) => b.createdAt - a.createdAt)
+      return comments
+    } catch (err) {
+      wlogger.error('Error in lib/comments.js/getCommentsByParentId()')
       throw err
     }
   }

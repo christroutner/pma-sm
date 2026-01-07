@@ -74,6 +74,9 @@ class PostUseCaseMock {
   async deletePost(post) {
     return true
   }
+  async getHydratedPosts() {
+    return true
+  }
 }
 
 class CommentUseCaseMock {
@@ -91,6 +94,9 @@ class CommentUseCaseMock {
     return true
   }
   async deleteComment(comment) {
+    return true
+  }
+  async getCommentsByParentId(parentId) {
     return true
   }
 }

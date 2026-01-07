@@ -19,13 +19,14 @@ class PostLib {
     // Encapsulate dependencies
     this.PostEntity = new PostEntity()
     this.PostModel = this.adapters.localdb.Posts
-
+    this.CommentModel = this.adapters.localdb.Comments
     // Bind all methods to the class instance.
     this.createPost = this.createPost.bind(this)
     this.getAllPosts = this.getAllPosts.bind(this)
     this.getPost = this.getPost.bind(this)
     this.updatePost = this.updatePost.bind(this)
     this.deletePost = this.deletePost.bind(this)
+    this.getHydratedPosts = this.getHydratedPosts.bind(this)
   }
 
   // Create a new post model and add it to the Mongo database.
@@ -95,8 +96,7 @@ class PostLib {
         throw new Error("Property 'likes' must be an array!")
       }
 
-      existingPost.postContent = newData.postContent
-      existingPost.likes = newData.likes
+      Object.assign(existingPost, newData)
       existingPost.updatedAt = new Date()
 
       // Save the changes to the database.
@@ -114,6 +114,24 @@ class PostLib {
       await post.remove()
     } catch (err) {
       wlogger.error('Error in lib/posts.js/deletePost()')
+      throw err
+    }
+  }
+
+  // get post with comments count and owner details
+  async getHydratedPosts () {
+    try {
+      const hydratedPosts = await this.PostModel.find().populate('ownerId').lean()
+      for (const post of hydratedPosts) {
+        const totalComments = await this.CommentModel.countDocuments({ parentId: post._id })
+        post.totalComments = totalComments
+      }
+
+      // sort by created at , newest to oldest
+      hydratedPosts.sort((a, b) => b.createdAt - a.createdAt)
+      return hydratedPosts
+    } catch (err) {
+      wlogger.error('Error in lib/posts.js/getHydratedPosts()', err)
       throw err
     }
   }

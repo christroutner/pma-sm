@@ -220,6 +220,29 @@ describe('#Comment-REST-Controller', () => {
       assert.property(ctx.response.body, 'comment')
     })
   })
+  describe('GET /comment/parent/:id', () => {
+    it('should return 200 on success', async () => {
+      ctx.params = {
+        id: 'abc123'
+      }
+
+      sandbox.stub(uut.useCases.comment, 'getCommentsByParentId').returns([])
+      await uut.getCommentsByParentId(ctx)
+      assert.equal(ctx.status, 200)
+      assert.property(ctx.response.body, 'comments')
+    })
+    it('should return 422 if no input data given', async () => {
+      try {
+        await uut.getCommentsByParentId(ctx)
+
+        assert.fail('Unexpected result')
+      } catch (err) {
+        // console.log(err)
+        assert.equal(err.status, 422)
+        assert.include(err.message, 'Cannot read')
+      }
+    })
+  })
 
   describe('DELETE /comment/:id', () => {
     it('should return 422 if no input data given', async () => {

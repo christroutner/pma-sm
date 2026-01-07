@@ -6,7 +6,7 @@
 import mongoose from 'mongoose'
 
 const Comment = new mongoose.Schema({
-  ownerId: { type: String },
+  ownerId: { type: String, ref: 'user' },
   createdAt: { type: Date },
   commentContent: { type: String },
   updatedAt: { type: Date },

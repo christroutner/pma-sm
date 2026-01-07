@@ -248,6 +248,39 @@ describe('#posts-use-case', () => {
       assert.equal(post.likes.length, 1)
     })
   })
+  describe('#getHydratedPosts', () => {
+    it('shound handle errors', async () => {
+      try {
+        const fakeFind = {
+          populate: () => {
+            return {
+              lean: () => {
+                throw new Error('test error')
+              }
+            }
+          }
+        }
+        sandbox.stub(uut.PostModel, 'find').returns(fakeFind)
+        await uut.getHydratedPosts()
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, 'test error')
+      }
+    })
+    it('should return all hydrated posts from the database', async () => {
+      const fakeFind = {
+        populate: () => {
+          return {
+            lean: () => [{ _id: 'abc123' }]
+          }
+        }
+      }
+      sandbox.stub(uut.PostModel, 'find').returns(fakeFind)
+      sandbox.stub(uut.CommentModel, 'countDocuments').resolves(1)
+      const posts = await uut.getHydratedPosts()
+      assert.isArray(posts)
+    })
+  })
 
   describe('#deletePost', () => {
     it('should delete the post from the database', async () => {

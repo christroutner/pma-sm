@@ -29,6 +29,7 @@ class CommentRESTControllerLib {
     this.getComment = this.getComment.bind(this)
     this.updateComment = this.updateComment.bind(this)
     this.deleteComment = this.deleteComment.bind(this)
+    this.getCommentsByParentId = this.getCommentsByParentId.bind(this)
     this.handleError = this.handleError.bind(this)
   }
 
@@ -276,6 +277,48 @@ class CommentRESTControllerLib {
       }
     } catch (err) {
       ctx.throw(422, err.message)
+    }
+  }
+
+  /**
+   * @api {get} /comment/parent/:id Get comments by parent id
+   * @apiPermission user
+   * @apiName GetCommentsByParentId
+   * @apiGroup REST Comment
+   *
+   * @apiExample Example usage:
+   * curl -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -X GET localhost:5010/comment/parent/56bd1da600a526986cf65c80
+   *
+   * @apiSuccess {Object[]} comments           Array of comment objects
+   * @apiSuccess {ObjectId} comments._id       Comment id
+   * @apiSuccess {String}   comments.ownerId    Owner id
+   * @apiSuccess {Date}     comments.createdAt  Created at
+   * @apiSuccess {String}   comments.commentContent Comment content
+   * @apiSuccess {String}   comments.parentId Parent id
+   * @apiSuccess {String}   comments.parentType Parent type
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *       "comments": [{
+   *          "_id": "56bd1da600a526986cf65c80"
+   *          "ownerId": "56bd1da600a526986cf65c80"
+   *          "createdAt": "2025-01-01"
+   *          "commentContent": "This is a test comment"
+   *          "parentId": "56bd1da600a526986cf65c80"
+   *          "parentType": "post"
+   *       }]
+   *     }
+   *
+   * @apiUse TokenError
+   * @apiError UnprocessableEntity Missing required parameters or invalid data types
+   */
+  async getCommentsByParentId (ctx) {
+    try {
+      const comments = await this.useCases.comment.getCommentsByParentId(ctx.params.id)
+      ctx.body = { comments }
+    } catch (err) {
+      this.handleError(ctx, err, 422)
     }
   }
 
