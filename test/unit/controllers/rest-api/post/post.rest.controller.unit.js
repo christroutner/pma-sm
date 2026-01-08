@@ -221,6 +221,22 @@ describe('#Post-REST-Controller', () => {
       assert.property(ctx.response.body, 'post')
     })
   })
+  describe('GET /post/hydrated', () => {
+    it('should return 422 if no input data given', async () => {
+      try {
+        sandbox.stub(uut.useCases.post, 'getHydratedPosts').rejects(new Error('test error'))
+        await uut.getHydratedPosts(ctx)
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, 'test error')
+      }
+    })
+    it('should return 200 on success', async () => {
+      await uut.getHydratedPosts(ctx)
+      assert.equal(ctx.status, 200)
+      assert.property(ctx.response.body, 'posts')
+    })
+  })
 
   describe('DELETE /post/:id', () => {
     it('should return 422 if no input data given', async () => {

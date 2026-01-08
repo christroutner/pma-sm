@@ -6,7 +6,7 @@
 import mongoose from 'mongoose'
 
 const Post = new mongoose.Schema({
-  ownerId: { type: String },
+  ownerId: { type: String, ref: 'user' },
   createdAt: { type: Date },
   postContent: { type: String },
   likes: { type: Array, default: [] },

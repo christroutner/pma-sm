@@ -29,6 +29,7 @@ class PostRESTControllerLib {
     this.getPost = this.getPost.bind(this)
     this.updatePost = this.updatePost.bind(this)
     this.deletePost = this.deletePost.bind(this)
+    this.getHydratedPosts = this.getHydratedPosts.bind(this)
     this.handleError = this.handleError.bind(this)
   }
 
@@ -262,6 +263,47 @@ class PostRESTControllerLib {
       }
     } catch (err) {
       ctx.throw(422, err.message)
+    }
+  }
+
+  /**
+   * @api {get} /post/hydrated Get all hydrated posts
+   * @apiPermission user
+   * @apiName GetHydratedPosts
+   * @apiGroup REST Post
+   *
+   * @apiExample Example usage:
+   * curl -H "Content-Type: application/json" -X GET localhost:5010/post/hydrated
+   *
+   * @apiSuccess {Object}   post           Post object
+   * @apiSuccess {ObjectId} post._id       Post id
+   * @apiSuccess {String}   post.ownerId    Owner id
+   * @apiSuccess {Date}     post.createdAt  Created at
+   * @apiSuccess {String}   post.postContent Post content
+   * @apiSuccess {Array}    post.likes      Likes
+   * @apiSuccess {Number}   post.totalComments Total comments count
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *       "post": {
+   *          "_id": "56bd1da600a526986cf65c80"
+   *          "ownerId": "56bd1da600a526986cf65c80"
+   *          "createdAt": "2025-01-01"
+   *          "postContent": "This is a test post"
+   *          "likes": ["56bd1da600a526986cf65c80"]
+   *          "totalComments": 1
+   *       }
+   *     }
+   *
+   * @apiUse TokenError
+   */
+  async getHydratedPosts (ctx) {
+    try {
+      const posts = await this.useCases.post.getHydratedPosts()
+      ctx.body = { posts }
+    } catch (err) {
+      this.handleError(ctx, err)
     }
   }
 

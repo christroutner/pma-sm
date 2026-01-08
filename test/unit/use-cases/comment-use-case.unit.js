@@ -277,6 +277,34 @@ describe('#comments-use-case', () => {
       assert.equal(comment.likes.length, 1)
     })
   })
+  describe('#getCommentsByParentId', () => {
+    it('should return all comments by parent id', async () => {
+      const fakeFind = {
+        populate: () => {
+          return [{ _id: 'abc123' }]
+        }
+      }
+      sandbox.stub(uut.CommentModel, 'find').returns(fakeFind)
+      const comments = await uut.getCommentsByParentId('abc123')
+      assert.isArray(comments)
+    })
+    it('should throw an error if no parent id provided', async () => {
+      try {
+        await uut.getCommentsByParentId()
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, "Property 'parentId' must be a string!")
+      }
+    })
+    it('should throw an error if parent id is not a string', async () => {
+      try {
+        await uut.getCommentsByParentId(123)
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, "Property 'parentId' must be a string!")
+      }
+    })
+  })
 
   describe('#deleteComment', () => {
     it('should delete the comment from the database', async () => {

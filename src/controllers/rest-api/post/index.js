@@ -48,6 +48,7 @@ class PostRouter {
     this.getPost = this.getPost.bind(this)
     this.updatePost = this.updatePost.bind(this)
     this.deletePost = this.deletePost.bind(this)
+    this.getHydratedPosts = this.getHydratedPosts.bind(this)
   }
 
   attach (app) {
@@ -60,10 +61,10 @@ class PostRouter {
     // Define the routes and attach the controller.
     this.router.post('/', this.createPost)
     this.router.get('/', this.getAll)
+    this.router.get('/hydrated', this.getHydratedPosts)
     this.router.get('/:id', this.getPost)
     this.router.put('/:id', this.updatePost)
     this.router.delete('/:id', this.deletePost)
-
     // Attach the Controller routes to the Koa app.
     app.use(this.router.routes())
     app.use(this.router.allowedMethods())
@@ -95,6 +96,11 @@ class PostRouter {
     await this.validators.ensureUser(ctx, next)
     await this.postRESTController.getPost(ctx, next)
     await this.postRESTController.deletePost(ctx, next)
+  }
+
+  async getHydratedPosts (ctx, next) {
+    await this.validators.ensureUser(ctx, next)
+    await this.postRESTController.getHydratedPosts(ctx, next)
   }
 }
 

@@ -90,6 +90,10 @@ const localdb = {
       return true
     }
 
+    static async countDocuments () {
+      return 1
+    }
+
   },
     Comments: class Comments {
     static findById () {}
@@ -109,6 +113,9 @@ const localdb = {
 
     async remove () {
       return true
+    }
+    static async countDocuments () {
+      return 1
     }
 
   },

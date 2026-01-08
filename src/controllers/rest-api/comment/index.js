@@ -48,6 +48,7 @@ class CommentRouter {
     this.getComment = this.getComment.bind(this)
     this.updateComment = this.updateComment.bind(this)
     this.deleteComment = this.deleteComment.bind(this)
+    this.getCommentsByParentId = this.getCommentsByParentId.bind(this)
   }
 
   attach (app) {
@@ -63,6 +64,7 @@ class CommentRouter {
     this.router.get('/:id', this.getComment)
     this.router.put('/:id', this.updateComment)
     this.router.delete('/:id', this.deleteComment)
+    this.router.get('/parent/:id', this.getCommentsByParentId)
 
     // Attach the Controller routes to the Koa app.
     app.use(this.router.routes())
@@ -95,6 +97,11 @@ class CommentRouter {
     await this.validators.ensureUser(ctx, next)
     await this.commentRESTController.getComment(ctx, next)
     await this.commentRESTController.deleteComment(ctx, next)
+  }
+
+  async getCommentsByParentId (ctx, next) {
+    await this.validators.ensureUser(ctx, next)
+    await this.commentRESTController.getCommentsByParentId(ctx, next)
   }
 }
 

@@ -517,6 +517,68 @@ if (!config.noMongo) {
       })
     })
 
+    describe('GET /comment/parent/:id', () => {
+      it('should not get comments by parent id if the authorization header is missing', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/comment/parent/1`
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should not get comments by parent id if the authorization header has invalid scheme', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/comment/parent/1`
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should not get comments by parent id if token is invalid', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/comment/parent/${context.postId}`,
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Bearer 1'
+            }
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should get comments by parent id', async () => {
+        const options = {
+          method: 'GET',
+          url: `${LOCALHOST}/comment/parent/${context.postId}`,
+          headers: {
+            Authorization: `Bearer ${context.token}`
+          }
+        }
+        const result = await axios(options)
+        const comment = result.data.comments[0]
+        assert.property(comment, 'ownerId')
+        assert.property(comment, 'createdAt')
+        assert.property(comment, 'commentContent')
+        assert.property(comment, 'parentId')
+        assert.property(comment, 'parentType')
+        assert.property(comment, 'likes')
+      })
+    })
     describe('DELETE /comment/:id', () => {
       it('should not delete a comment if the authorization header is missing', async () => {
         try {
