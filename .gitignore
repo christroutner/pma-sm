@@ -67,6 +67,7 @@ ipfsdata
 .ipfsdata
 data/
 run-dev.sh
+files/*
 
 !README.md
 
