@@ -56,6 +56,14 @@ describe('#Post-Entity', () => {
         assert.include(err.message, "Property 'postContent' must be a string!")
       }
     })
+    it('should throw an error if provided mediaUrls is not an array', () => {
+      try {
+        uut.validate({ ownerId: '123', postContent: '1234', mediaUrls: 'test' })
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, "Property 'mediaUrls' must be an array!")
+      }
+    })
     it('should return a Post object', () => {
       const inputData = {
         ownerId: '123',

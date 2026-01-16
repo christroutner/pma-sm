@@ -10,7 +10,8 @@ const Post = new mongoose.Schema({
   createdAt: { type: Date },
   postContent: { type: String },
   likes: { type: Array, default: [] },
-  updatedAt: { type: Date }
+  updatedAt: { type: Date },
+  mediaUrls: { type: Array, default: [] }
 })
 
 export default mongoose.model('post', Post)
