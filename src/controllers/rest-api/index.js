@@ -16,6 +16,7 @@ import config from '../../../config/index.js'
 import UsageRESTController from './usage/index.js'
 import PostRouter from './post/index.js'
 import CommentRouter from './comment/index.js'
+import FilesRouter from './files/index.js'
 
 class RESTControllers {
   constructor (localConfig = {}) {
@@ -79,6 +80,10 @@ class RESTControllers {
     // Attach the REST API Controllers associated with the /comment route
     const commentRouter = new CommentRouter(dependencies)
     commentRouter.attach(app)
+
+    // Attach the REST API Controllers associated with the /files route
+    const filesRouter = new FilesRouter(dependencies)
+    filesRouter.attach(app)
   }
 }
 
