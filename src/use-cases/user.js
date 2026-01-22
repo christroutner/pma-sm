@@ -120,6 +120,12 @@ class UserLib {
       if (newData.website && typeof newData.website !== 'string') {
         throw new Error("Property 'website' must be a string!")
       }
+      if (newData.bannerUrl && typeof newData.bannerUrl !== 'string') {
+        throw new Error("Property 'bannerUrl' must be a string!")
+      }
+      if (newData.phoneNumber && typeof newData.phoneNumber !== 'string') {
+        throw new Error("Property 'phoneNumber' must be a string!")
+      }
 
       // Save a copy of the original user type.
       const userType = existingUser.type
