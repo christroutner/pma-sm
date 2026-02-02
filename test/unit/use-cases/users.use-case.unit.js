@@ -376,12 +376,47 @@ describe('#users-use-case', () => {
         )
       }
     })
+    it('should throw an error if non-string bannerUrl given', async () => {
+      try {
+        const newData = {
+          email: 'test@test.com',
+          name: 'test',
+          bannerUrl: 1234
+        }
+        await uut.updateUser(testUser, newData)
 
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        // console.log(err)
+        assert.include(err.message, "Property 'bannerUrl' must be a string!")
+      }
+    })
+    it('should throw an error if non-string phoneNumber given', async () => {
+      try {
+        const newData = {
+          email: 'test@test.com',
+          name: 'test',
+          phoneNumber: 1234
+        }
+
+        await uut.updateUser(testUser, newData)
+
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        // console.log(err)
+        assert.include(err.message, "Property 'phoneNumber' must be a string!")
+      }
+    })
     it('should update the user model', async () => {
       const newData = {
         email: 'test@test.com',
         password: 'password',
-        name: 'testy tester'
+        name: 'testy tester',
+        bannerUrl: 'https://example.com/banner.jpg',
+        phoneNumber: '1234567890',
+        profilePictureUrl: 'https://example.com/profile.jpg',
+        about: 'I am a test user',
+        website: 'https://example.com'
       }
       testUser.save = async () => { }
 
@@ -393,6 +428,16 @@ describe('#users-use-case', () => {
       assert.equal(result.email, 'test@test.com')
       assert.property(result, 'name')
       assert.equal(result.name, 'testy tester')
+      assert.property(result, 'bannerUrl')
+      assert.equal(result.bannerUrl, 'https://example.com/banner.jpg')
+      assert.property(result, 'phoneNumber')
+      assert.equal(result.phoneNumber, '1234567890')
+      assert.property(result, 'profilePictureUrl')
+      assert.equal(result.profilePictureUrl, 'https://example.com/profile.jpg')
+      assert.property(result, 'about')
+      assert.equal(result.about, 'I am a test user')
+      assert.property(result, 'website')
+      assert.equal(result.website, 'https://example.com')
     })
 
     // TODO: verify that an admin can change the type of a user
