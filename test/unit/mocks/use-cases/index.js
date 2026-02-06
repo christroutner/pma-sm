@@ -77,6 +77,9 @@ class PostUseCaseMock {
   async getHydratedPosts() {
     return true
   }
+  async getHydratedPost(id) {
+    return true
+  }
 }
 
 class CommentUseCaseMock {

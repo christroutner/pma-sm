@@ -49,6 +49,7 @@ class PostRouter {
     this.updatePost = this.updatePost.bind(this)
     this.deletePost = this.deletePost.bind(this)
     this.getHydratedPosts = this.getHydratedPosts.bind(this)
+    this.getHydratedPost = this.getHydratedPost.bind(this)
   }
 
   attach (app) {
@@ -62,6 +63,7 @@ class PostRouter {
     this.router.post('/', this.createPost)
     this.router.get('/', this.getAll)
     this.router.get('/hydrated', this.getHydratedPosts)
+    this.router.get('/hydrated/:id', this.getHydratedPost)
     this.router.get('/:id', this.getPost)
     this.router.put('/:id', this.updatePost)
     this.router.delete('/:id', this.deletePost)
@@ -101,6 +103,11 @@ class PostRouter {
   async getHydratedPosts (ctx, next) {
     await this.validators.ensureUser(ctx, next)
     await this.postRESTController.getHydratedPosts(ctx, next)
+  }
+
+  async getHydratedPost (ctx, next) {
+    await this.validators.ensureUser(ctx, next)
+    await this.postRESTController.getHydratedPost(ctx, next)
   }
 }
 

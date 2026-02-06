@@ -564,6 +564,63 @@ if (!config.noMongo) {
         assert.property(post, 'totalComments')
       })
     })
+    describe('GET /post/hydrated/:id', () => {
+      it('should not get a hydrated post if the authorization header is missing', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/post/hydrated/${context.postId}`
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should not get a hydrated post if the authorization header has invalid scheme', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/post/hydrated/${context.postId}`
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should not get a hydrated post if token is invalid', async () => {
+        try {
+          const options = {
+            method: 'GET',
+            url: `${LOCALHOST}/post/hydrated/${context.postId}`
+          }
+          await axios(options)
+
+          assert.equal(true, false, 'Unexpected behavior')
+        } catch (err) {
+          assert.equal(err.response.status, 401)
+        }
+      })
+      it('should get a hydrated post', async () => {
+        const options = {
+          method: 'GET',
+          url: `${LOCALHOST}/post/hydrated/${context.postId}`,
+          headers: {
+            Authorization: `Bearer ${context.token}`
+          }
+        }
+        const result = await axios(options)
+        const post = result.data.post
+        assert.property(post, 'ownerId')
+        assert.property(post, 'createdAt')
+        assert.property(post, 'postContent')
+        assert.property(post, 'likes')
+        assert.property(post, 'totalComments')
+      })
+    })
     describe('DELETE /post/:id', () => {
       it('should not delete a post if the authorization header is missing', async () => {
         try {
