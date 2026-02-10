@@ -281,7 +281,49 @@ describe('#posts-use-case', () => {
       assert.isArray(posts)
     })
   })
-
+  describe('#getHydratedPost', () => {
+    it('should throw an error if no post id provided', async () => {
+      try {
+        await uut.getHydratedPost()
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, 'Post ID is required')
+      }
+    })
+    it('should throw an error if post not found', async () => {
+      try {
+        const fakeFind = {
+          populate: () => {
+            return {
+              lean: () => {
+                return null
+              }
+            }
+          }
+        }
+        sandbox.stub(uut.PostModel, 'findOne').returns(fakeFind)
+        await uut.getHydratedPost('123')
+        assert.fail('Unexpected code path')
+      } catch (err) {
+        assert.include(err.message, 'Post not found')
+      }
+    })
+    it('should return the hydrated post', async () => {
+      const fakeFind = {
+        populate: () => {
+          return {
+            lean: () => {
+              return { _id: 'abc123' }
+            }
+          }
+        }
+      }
+      sandbox.stub(uut.PostModel, 'findOne').returns(fakeFind)
+      sandbox.stub(uut.CommentModel, 'countDocuments').resolves(1)
+      const post = await uut.getHydratedPost('abc123')
+      assert.isObject(post)
+    })
+  })
   describe('#deletePost', () => {
     it('should delete the post from the database', async () => {
       const testPost = { _id: 'abc123', remove: () => {} }

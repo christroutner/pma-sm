@@ -137,4 +137,13 @@ describe('#Post-REST-Router', () => {
       assert.isTrue(spy.calledOnce)
     })
   })
+  describe('#getHydratedPost', () => {
+    it('should route to controller', async () => {
+      sandbox.stub(uut.validators, 'ensureUser').resolves(true)
+      const spy = sandbox.stub(uut.postRESTController, 'getHydratedPost').resolves(true)
+
+      await uut.getHydratedPost()
+      assert.isTrue(spy.calledOnce)
+    })
+  })
 })

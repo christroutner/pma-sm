@@ -27,6 +27,7 @@ class PostLib {
     this.updatePost = this.updatePost.bind(this)
     this.deletePost = this.deletePost.bind(this)
     this.getHydratedPosts = this.getHydratedPosts.bind(this)
+    this.getHydratedPost = this.getHydratedPost.bind(this)
   }
 
   // Create a new post model and add it to the Mongo database.
@@ -118,7 +119,7 @@ class PostLib {
     }
   }
 
-  // get post with comments count and owner details
+  // get posts with comments count and owner details
   async getHydratedPosts () {
     try {
       const hydratedPosts = await this.PostModel.find().populate('ownerId').lean()
@@ -132,6 +133,25 @@ class PostLib {
       return hydratedPosts
     } catch (err) {
       wlogger.error('Error in lib/posts.js/getHydratedPosts()', err)
+      throw err
+    }
+  }
+
+  // get single post with comments count and owner details
+  async getHydratedPost (postId) {
+    try {
+      if (!postId) {
+        throw new Error('Post ID is required')
+      }
+      const hydratedPost = await this.PostModel.findOne({ _id: postId }).populate('ownerId').lean()
+      if (!hydratedPost) {
+        throw new Error('Post not found')
+      }
+      const totalComments = await this.CommentModel.countDocuments({ parentId: hydratedPost._id })
+      hydratedPost.totalComments = totalComments
+      return hydratedPost
+    } catch (err) {
+      wlogger.error('Error in lib/posts.js/getHydratedPost()', err)
       throw err
     }
   }
